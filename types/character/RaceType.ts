@@ -1,0 +1,2 @@
+export type RaceType = "human" | "elf" | "dwarf" | "orc" | "goblin" | "halfling" | "giant" | "dragonKin" | "beastKin" | "undead" | "vampire" | "wereCreature" | "elemental" | "alien" | "android" | "mutant" | "cyborg" | "construct" | "spirit" | "shapeShifter" | "merfolk" | "reptilian" | "avianFolk" | "insectoid" | "plantFolk" | "aquaticBeing" | "shadowspawn" | "energyBeing" | "timewalker" | "hybrid";
+ 
