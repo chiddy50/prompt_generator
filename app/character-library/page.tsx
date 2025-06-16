@@ -10,11 +10,12 @@ const CharacterLibraryPage = () => {
     useEffect(() => {
         const storedLibraryExists = localStorage.getItem("character-library");
         if (storedLibraryExists) {
-            let storedLibrary = JSON.parse(storedLibraryExists);
-            
+            let storedLibrary = JSON.parse(storedLibraryExists);            
             setCharacters(storedLibrary);
         }
     }, []);
+
+
     return (
         <div className='mx-5 sm:mx-10 lg:mx-40'>
             <div className="text-center my-10">
