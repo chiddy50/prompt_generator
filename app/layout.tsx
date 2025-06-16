@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
 			<head>
 				<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+        <script src="https://checkout.flutterwave.com/v3.js"></script>
 				{/* <link rel="icon" href="/logo/fable_black.png" sizes="any" /> */}
 			</head>
       <body

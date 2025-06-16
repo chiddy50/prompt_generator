@@ -16,12 +16,12 @@ const CharacterLibraryPage = () => {
         }
     }, []);
     return (
-        <div className='mx-40'>
+        <div className='mx-5 sm:mx-10 lg:mx-40'>
             <div className="text-center my-10">
 				<h1 className="text-3xl font-bold text-gray-900 mb-2">Character Library</h1>
 				{/* <p className="text-gray-600 text-sm">Create and customize your character with detailed attributes and features.</p> */}
 			</div>
-               <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+               <div className="mt-5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
                     {
                         characters?.map((item, index) => (
                             <Link  
@@ -38,7 +38,7 @@ const CharacterLibraryPage = () => {
 
                                 </div>
                                 <div className='px-3 py-4 bg-[#F9F9F9] rounded-b-2xl text-center flex flex-col justify-between'>
-                                    <h2 className="font-extrabold min-h-[30px] capitalize text-sm">{(item?.firstName || item?.lastName) ? `${item?.firstName} ${item?.lastName}` : item?.alias}</h2>
+                                    <h2 className="font-extrabold min-h-[30px] capitalize text-sm">{(item?.firstName || item?.lastName) ? `${item?.firstName} ${item?.lastName}` : (item?.alias ?? "")}</h2>
                                     {/* <p className="capitalize text-[11px]">{item?.alias}</p> */}
                                 </div>
                             </Link>

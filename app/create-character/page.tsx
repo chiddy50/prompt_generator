@@ -23,35 +23,36 @@ import { buildGenerateCharacterPrompt } from "@/lib/prompts";
 import { useMainContext } from "@/contexts/MainContext";
 import GenericSelect from "@/components/shared/GenericSelect";
 import { toast } from "sonner";
+import FlutterwaveInlinePayment from "@/components/payment/FlutterwaveInlinePayment";
 
 
 const aIModels = [
-    "Midjourney", 
-    "Google's W.I.S.K",
-    "DALL-E 3",
-    "Stable Diffusion",
-    "Leonardo AI",
-    // "Runway ML",
+	"Midjourney",
+	"Google's W.I.S.K",
+	"DALL-E 3",
+	"Stable Diffusion",
+	"Leonardo AI",
+	// "Runway ML",
 ]
 
 
 function Boundary() {
 	const searchParams = useSearchParams();
 	const characterId = searchParams.get('character-id');
-	
+
 	const context = useCharacterContext();
 	const [characterData, setCharacterData] = useState(null);
 	const [prompt, setPrompt] = useState<string>("");
 	const [generating, setGenerating] = useState<boolean>(false);
-	
-	  const {
-        aIModel, setAIModel
+
+	const {
+		aIModel, setAIModel
 	} = useMainContext();
 
 	// Reset character data on mount and when characterId changes
 	useEffect(() => {
 		setCharacterData(null);
-		
+
 		const storedLibraryExists = localStorage.getItem("character-library");
 		if (storedLibraryExists) {
 			const storedLibrary = JSON.parse(storedLibraryExists);
@@ -64,7 +65,7 @@ function Boundary() {
 
 	// const characterData = useMemo(() => {
 	// 	if (!characterId) return null;
-		
+
 	// 	const storedLibrary = JSON.parse(localStorage.getItem("character-library") || "[]");
 	// 	return storedLibrary.find((item: any) => item.id === characterId) || null;
 	// }, [characterId]);
@@ -75,101 +76,101 @@ function Boundary() {
 
 	const saveCharacter = () => {
 		let characterData = {
-            id: characterId ?? uuidv4(),
-            ...(context.firstName && { firstName: context.firstName }),
-            ...(context.lastName && { lastName: context.lastName }),
-            ...(context.alias && { alias: context.alias }),
-            ...(context.gender && { gender: context.gender }),
-            ...(context.age && { age: context.age }),
-            ...(context.race && { race: context.race }),
-            ...(context.selectedFacialFeature && { selectedFacialFeature: context.selectedFacialFeature }),
-            ...(context.selectedFacialHair && { selectedFacialHair: context.selectedFacialHair }),
-            ...(context.selectedMarks && { selectedMarks: context.selectedMarks }),
-            ...(context.eyeColor && { eyeColor: context.eyeColor }),
-            ...(context.eyeShape && { eyeShape: context.eyeShape }),
-            ...(context.eyeBrowPosition && { eyeBrowPosition: context.eyeBrowPosition }),
-            ...(context.eyeBrowTexture && { eyeBrowTexture: context.eyeBrowTexture }),
-            ...(context.eyeBrowFeature && { eyeBrowFeature: context.eyeBrowFeature }),
-            ...(context.selectedNoseFeatures && { selectedNoseFeatures: context.selectedNoseFeatures }),
-            ...(context.selectedEarFeatures && { selectedEarFeatures: context.selectedEarFeatures }),
-            ...(context.selectedLipFeatures && { selectedLipFeatures: context.selectedLipFeatures }),
-            ...(context.teethVariation && { teethVariation: context.teethVariation }),
-            ...(context.dentalAccessory && { dentalAccessory: context.dentalAccessory }),
-            ...(context.hairTexture && { hairTexture: context.hairTexture }),
-            ...(context.selectedAccessories && { selectedAccessories: context.selectedAccessories }),
-            ...(context.hairLength && { hairLength: context.hairLength }),
-            ...(context.hairColor && { hairColor: context.hairColor }),
-            ...(context.skinTone && { skinTone: context.skinTone }),
-            ...(context.hairQuirks && { hairQuirks: context.hairQuirks }),
-            ...(context.height && { height: context.height }),
-            ...(context.build && { build: context.build }),
-            ...(context.proportion && { proportion: context.proportion }),
-            ...(context.physicalMovement && { physicalMovement: context.physicalMovement }),
-            ...(context.fullBodyWear && { fullBodyWear: context.fullBodyWear }),
-            ...(context.fullBodyWearMaterial && { fullBodyWearMaterial: context.fullBodyWearMaterial }),
-            ...(context.fullBodyWearColor && { fullBodyWearColor: context.fullBodyWearColor }),
-            ...(context.fullBodyWearPattern && { fullBodyWearPattern: context.fullBodyWearPattern }),
-            ...(context.fullBodyWearCondition && { fullBodyWearCondition: context.fullBodyWearCondition }),
-            ...(context.upperBodyWear && { upperBodyWear: context.upperBodyWear }),
-            ...(context.upperBodyWearMaterial && { upperBodyWearMaterial: context.upperBodyWearMaterial }),
-            ...(context.upperBodyWearColor && { upperBodyWearColor: context.upperBodyWearColor }),
-            ...(context.upperBodyWearPattern && { upperBodyWearPattern: context.upperBodyWearPattern }),
-            ...(context.upperBodyWearCondition && { upperBodyWearCondition: context.upperBodyWearCondition }),
-            ...(context.lowerBodyWear && { lowerBodyWear: context.lowerBodyWear }),
-            ...(context.lowerBodyWearMaterial && { lowerBodyWearMaterial: context.lowerBodyWearMaterial }),
-            ...(context.lowerBodyWearColor && { lowerBodyWearColor: context.lowerBodyWearColor }),
-            ...(context.lowerBodyWearPattern && { lowerBodyWearPattern: context.lowerBodyWearPattern }),
-            ...(context.lowerBodyWearCondition && { lowerBodyWearCondition: context.lowerBodyWearCondition }),
-            ...(context.outerBodyWear && { outerBodyWear: context.outerBodyWear }),
-            ...(context.outerBodyWearMaterial && { outerBodyWearMaterial: context.outerBodyWearMaterial }),
-            ...(context.outerBodyWearColor && { outerBodyWearColor: context.outerBodyWearColor }),
-            ...(context.outerBodyWearPattern && { outerBodyWearPattern: context.outerBodyWearPattern }),
-            ...(context.outerBodyWearCondition && { outerBodyWearCondition: context.outerBodyWearCondition }),
-            ...(context.extraBodyWear && { extraBodyWear: context.extraBodyWear }),
-            ...(context.extraBodyWearMaterial && { extraBodyWearMaterial: context.extraBodyWearMaterial }),
-            ...(context.extraBodyWearColor && { extraBodyWearColor: context.extraBodyWearColor }),
-            ...(context.extraBodyWearPattern && { extraBodyWearPattern: context.extraBodyWearPattern }),
-            ...(context.extraBodyWearCondition && { extraBodyWearCondition: context.extraBodyWearCondition }),
-            ...(context.footwear && { footwear: context.footwear }),
-            ...(context.footWearColor && { footWearColor: context.footWearColor }),
-            ...(context.footWearMaterial && { footWearMaterial: context.footWearMaterial }),
-            ...(context.footWearPattern && { footWearPattern: context.footWearPattern }),
-            ...(context.footWearCondition && { footWearCondition: context.footWearCondition }),
-            ...(context.headWear && { headWear: context.headWear }),
-            ...(context.headWearColor && { headWearColor: context.headWearColor }),
-            ...(context.headWearMaterial && { headWearMaterial: context.headWearMaterial }),
-            ...(context.headWearPattern && { headWearPattern: context.headWearPattern }),
-            ...(context.headWearCondition && { headWearCondition: context.headWearCondition }),
+			id: characterId ?? uuidv4(),
+			...(context.firstName && { firstName: context.firstName }),
+			...(context.lastName && { lastName: context.lastName }),
+			...(context.alias && { alias: context.alias }),
+			...(context.gender && { gender: context.gender }),
+			...(context.age && { age: context.age }),
+			...(context.race && { race: context.race }),
+			...(context.selectedFacialFeature && { selectedFacialFeature: context.selectedFacialFeature }),
+			...(context.selectedFacialHair && { selectedFacialHair: context.selectedFacialHair }),
+			...(context.selectedMarks && { selectedMarks: context.selectedMarks }),
+			...(context.eyeColor && { eyeColor: context.eyeColor }),
+			...(context.eyeShape && { eyeShape: context.eyeShape }),
+			...(context.eyeBrowPosition && { eyeBrowPosition: context.eyeBrowPosition }),
+			...(context.eyeBrowTexture && { eyeBrowTexture: context.eyeBrowTexture }),
+			...(context.eyeBrowFeature && { eyeBrowFeature: context.eyeBrowFeature }),
+			...(context.selectedNoseFeatures && { selectedNoseFeatures: context.selectedNoseFeatures }),
+			...(context.selectedEarFeatures && { selectedEarFeatures: context.selectedEarFeatures }),
+			...(context.selectedLipFeatures && { selectedLipFeatures: context.selectedLipFeatures }),
+			...(context.teethVariation && { teethVariation: context.teethVariation }),
+			...(context.dentalAccessory && { dentalAccessory: context.dentalAccessory }),
+			...(context.hairTexture && { hairTexture: context.hairTexture }),
+			...(context.selectedAccessories && { selectedAccessories: context.selectedAccessories }),
+			...(context.hairLength && { hairLength: context.hairLength }),
+			...(context.hairColor && { hairColor: context.hairColor }),
+			...(context.skinTone && { skinTone: context.skinTone }),
+			...(context.hairQuirks && { hairQuirks: context.hairQuirks }),
+			...(context.height && { height: context.height }),
+			...(context.build && { build: context.build }),
+			...(context.proportion && { proportion: context.proportion }),
+			...(context.physicalMovement && { physicalMovement: context.physicalMovement }),
+			...(context.fullBodyWear && { fullBodyWear: context.fullBodyWear }),
+			...(context.fullBodyWearMaterial && { fullBodyWearMaterial: context.fullBodyWearMaterial }),
+			...(context.fullBodyWearColor && { fullBodyWearColor: context.fullBodyWearColor }),
+			...(context.fullBodyWearPattern && { fullBodyWearPattern: context.fullBodyWearPattern }),
+			...(context.fullBodyWearCondition && { fullBodyWearCondition: context.fullBodyWearCondition }),
+			...(context.upperBodyWear && { upperBodyWear: context.upperBodyWear }),
+			...(context.upperBodyWearMaterial && { upperBodyWearMaterial: context.upperBodyWearMaterial }),
+			...(context.upperBodyWearColor && { upperBodyWearColor: context.upperBodyWearColor }),
+			...(context.upperBodyWearPattern && { upperBodyWearPattern: context.upperBodyWearPattern }),
+			...(context.upperBodyWearCondition && { upperBodyWearCondition: context.upperBodyWearCondition }),
+			...(context.lowerBodyWear && { lowerBodyWear: context.lowerBodyWear }),
+			...(context.lowerBodyWearMaterial && { lowerBodyWearMaterial: context.lowerBodyWearMaterial }),
+			...(context.lowerBodyWearColor && { lowerBodyWearColor: context.lowerBodyWearColor }),
+			...(context.lowerBodyWearPattern && { lowerBodyWearPattern: context.lowerBodyWearPattern }),
+			...(context.lowerBodyWearCondition && { lowerBodyWearCondition: context.lowerBodyWearCondition }),
+			...(context.outerBodyWear && { outerBodyWear: context.outerBodyWear }),
+			...(context.outerBodyWearMaterial && { outerBodyWearMaterial: context.outerBodyWearMaterial }),
+			...(context.outerBodyWearColor && { outerBodyWearColor: context.outerBodyWearColor }),
+			...(context.outerBodyWearPattern && { outerBodyWearPattern: context.outerBodyWearPattern }),
+			...(context.outerBodyWearCondition && { outerBodyWearCondition: context.outerBodyWearCondition }),
+			...(context.extraBodyWear && { extraBodyWear: context.extraBodyWear }),
+			...(context.extraBodyWearMaterial && { extraBodyWearMaterial: context.extraBodyWearMaterial }),
+			...(context.extraBodyWearColor && { extraBodyWearColor: context.extraBodyWearColor }),
+			...(context.extraBodyWearPattern && { extraBodyWearPattern: context.extraBodyWearPattern }),
+			...(context.extraBodyWearCondition && { extraBodyWearCondition: context.extraBodyWearCondition }),
+			...(context.footwear && { footwear: context.footwear }),
+			...(context.footWearColor && { footWearColor: context.footWearColor }),
+			...(context.footWearMaterial && { footWearMaterial: context.footWearMaterial }),
+			...(context.footWearPattern && { footWearPattern: context.footWearPattern }),
+			...(context.footWearCondition && { footWearCondition: context.footWearCondition }),
+			...(context.headWear && { headWear: context.headWear }),
+			...(context.headWearColor && { headWearColor: context.headWearColor }),
+			...(context.headWearMaterial && { headWearMaterial: context.headWearMaterial }),
+			...(context.headWearPattern && { headWearPattern: context.headWearPattern }),
+			...(context.headWearCondition && { headWearCondition: context.headWearCondition }),
 
-            ...(context.eyeWear && { eyeWear: context.eyeWear }),
-            ...(context.eyeWearCondition && { eyeWearCondition: context.eyeWearCondition }),
-            ...(context.eyeWearColor && { eyeWearColor: context.eyeWearColor }),
-			
-            ...(context.neckWear && { neckWear: context.neckWear }),
-            ...(context.neckWearColor && { neckWearColor: context.neckWearColor }),
-            ...(context.neckWearMaterial && { neckWearMaterial: context.neckWearMaterial }),
-            ...(context.neckWearPattern && { neckWearPattern: context.neckWearPattern }),
-            ...(context.neckWearCondition && { neckWearCondition: context.neckWearCondition }),
+			...(context.eyeWear && { eyeWear: context.eyeWear }),
+			...(context.eyeWearCondition && { eyeWearCondition: context.eyeWearCondition }),
+			...(context.eyeWearColor && { eyeWearColor: context.eyeWearColor }),
 
-            ...(context.leftHandWear && { leftHandWear: context.leftHandWear }),
-            ...(context.leftHandWearMaterial && { leftHandWearMaterial: context.leftHandWearMaterial }),
-            ...(context.leftHandWearColor && { leftHandWearColor: context.leftHandWearColor }),
-            ...(context.rightHandWear && { rightHandWear: context.rightHandWear }),
-            ...(context.rightHandWearMaterial && { rightHandWearMaterial: context.rightHandWearMaterial }),
-            ...(context.rightHandWearColor && { rightHandWearColor: context.rightHandWearColor }),
-            ...(context.leftFingerWear && { leftFingerWear: context.leftFingerWear }),
-            ...(context.leftFingerWearMaterial && { leftFingerWearMaterial: context.leftFingerWearMaterial }),
-            ...(context.leftFingerWearColor && { leftFingerWearColor: context.leftFingerWearColor }),
-            ...(context.rightFingerWear && { rightFingerWear: context.rightFingerWear }),
-            ...(context.rightFingerWearMaterial && { rightFingerWearMaterial: context.rightFingerWearMaterial }),
-            ...(context.rightFingerWearColor && { rightFingerWearColor: context.rightFingerWearColor }),
-            ...(context.leftWristWear && { leftWristWear: context.leftWristWear }),
-            ...(context.leftWristWearMaterial && { leftWristWearMaterial: context.leftWristWearMaterial }),
-            ...(context.leftWristWearColor && { leftWristWearColor: context.leftWristWearColor }),
-            ...(context.rightWristWear && { rightWristWear: context.rightWristWear }),
-            ...(context.rightWristWearMaterial && { rightWristWearMaterial: context.rightWristWearMaterial }),
-            ...(context.rightWristWearColor && { rightWristWearColor: context.rightWristWearColor }),
-            ...(context.techAccessories && { techAccessories: context.techAccessories }),			
+			...(context.neckWear && { neckWear: context.neckWear }),
+			...(context.neckWearColor && { neckWearColor: context.neckWearColor }),
+			...(context.neckWearMaterial && { neckWearMaterial: context.neckWearMaterial }),
+			...(context.neckWearPattern && { neckWearPattern: context.neckWearPattern }),
+			...(context.neckWearCondition && { neckWearCondition: context.neckWearCondition }),
+
+			...(context.leftHandWear && { leftHandWear: context.leftHandWear }),
+			...(context.leftHandWearMaterial && { leftHandWearMaterial: context.leftHandWearMaterial }),
+			...(context.leftHandWearColor && { leftHandWearColor: context.leftHandWearColor }),
+			...(context.rightHandWear && { rightHandWear: context.rightHandWear }),
+			...(context.rightHandWearMaterial && { rightHandWearMaterial: context.rightHandWearMaterial }),
+			...(context.rightHandWearColor && { rightHandWearColor: context.rightHandWearColor }),
+			...(context.leftFingerWear && { leftFingerWear: context.leftFingerWear }),
+			...(context.leftFingerWearMaterial && { leftFingerWearMaterial: context.leftFingerWearMaterial }),
+			...(context.leftFingerWearColor && { leftFingerWearColor: context.leftFingerWearColor }),
+			...(context.rightFingerWear && { rightFingerWear: context.rightFingerWear }),
+			...(context.rightFingerWearMaterial && { rightFingerWearMaterial: context.rightFingerWearMaterial }),
+			...(context.rightFingerWearColor && { rightFingerWearColor: context.rightFingerWearColor }),
+			...(context.leftWristWear && { leftWristWear: context.leftWristWear }),
+			...(context.leftWristWearMaterial && { leftWristWearMaterial: context.leftWristWearMaterial }),
+			...(context.leftWristWearColor && { leftWristWearColor: context.leftWristWearColor }),
+			...(context.rightWristWear && { rightWristWear: context.rightWristWear }),
+			...(context.rightWristWearMaterial && { rightWristWearMaterial: context.rightWristWearMaterial }),
+			...(context.rightWristWearColor && { rightWristWearColor: context.rightWristWearColor }),
+			...(context.techAccessories && { techAccessories: context.techAccessories }),
 		}
 		console.log(characterData);
 
@@ -184,14 +185,14 @@ function Boundary() {
 		});
 
 		// const updatedLibrary = [...storedLibrary, characterData];
-		localStorage.setItem("character-library", JSON.stringify(updatedCharacterLibrary));	
+		localStorage.setItem("character-library", JSON.stringify(updatedCharacterLibrary));
 	}
 
 	const generatePrompt = async () => {
 		try {
 			const prompt = buildGenerateCharacterPrompt(context, aIModel);
 			console.log(prompt);
-			
+
 			// return
 			setGenerating(true);
 
@@ -207,7 +208,7 @@ function Boundary() {
 			});
 
 			if (!response?.body) {
-				setGenerating(false);   
+				setGenerating(false);
 				toast.error("Try again please");
 				return;
 			}
@@ -242,8 +243,13 @@ function Boundary() {
 				<h1 className="text-3xl font-bold text-gray-900 mb-2">Character Development</h1>
 				<p className="text-gray-600 text-sm mx-10">Create and customize your character with detailed attributes and features.</p>
 			</div>
+
+			<div className="flex justify-center">
+				<FlutterwaveInlinePayment />
+			</div>
+
 			{/* <div className="p-4 max-w-xl mx-auto mb-20"> */}
-			<div className="my-7 mx-auto w-[90%] sm:w-[60%] lg:w-[50%] xl:w-[40%]  gap-14 mb-5">				
+			<div className="my-7 mx-auto w-[90%] sm:w-[60%] lg:w-[50%] xl:w-[40%]  gap-14 mb-5">
 
 				<div className="col-span-1 mb-10">
 					<Accordion type="single" collapsible>
@@ -303,20 +309,20 @@ function Boundary() {
 					<div className="mt-10">
 
 						<p className="font-medium mb-1">Choose AI Model</p>
-						 <GenericSelect
+						<GenericSelect
 							options={aIModels}
 							selected={aIModel}
 							onSelect={setAIModel}
 							className="w-full"
 						/>
 						<Button onClick={generatePrompt}
-						 	disabled={generating}
-							size="lg" 
+							disabled={generating}
+							size="lg"
 							className={`bg-purple-900 mt-5 text-white w-full transition-all hover:bg-purple-800
 							${generating ? "opacity-30" : ""}
 						`}>
-							{ !generating && <Cog />	}
-                        	{ generating && <i className='bx bx-loader-alt bx-spin  text-xl' ></i>}
+							{!generating && <Cog />}
+							{generating && <i className='bx bx-loader-alt bx-spin  text-xl' ></i>}
 
 							{generating ? "Generating..." : "Generate Prompt"}
 						</Button>
@@ -324,7 +330,7 @@ function Boundary() {
 					<div className="my-5 grid grid-cols-2 gap-5">
 						<Button onClick={saveCharacter} disabled={generating} size="lg" className="bg-gray-200 w-full text-black">
 							Save
-							<Save />	
+							<Save />
 						</Button>
 						<Link href="/scene-builder" className="block w-full">
 							<Button className="bg-gray-800 text-white w-full" size="lg">Move to Scene</Button>
@@ -334,7 +340,7 @@ function Boundary() {
 
 				<div className="col-span-1 mb-20">
 
-					{ prompt && <DisplayCharacterPrompt characterData={characterData} prompt={prompt} /> }				
+					{prompt && <DisplayCharacterPrompt characterData={characterData} prompt={prompt} />}
 
 				</div>
 
